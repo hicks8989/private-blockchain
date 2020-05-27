@@ -57,15 +57,27 @@ class Block {
      *
      *  1. Use hex2ascii module to decode the data
      *  2. Because data is a javascript object use JSON.parse(string) to get the Javascript Object
-     *  3. Resolve with the data and make sure that you don't need to return the data for the `genesis block` 
+     *  3. Resolve with the data and make sure that you don't need to return the data for the `genesis block`
      *     or Reject with an error.
      */
     getBData() {
         // Getting the encoded data saved in the Block
         // Decoding the data to retrieve the JSON representation of the object
         // Parse the data to an object to be retrieve.
+        let self = this;
 
-        // Resolve with the data if the object isn't the Genesis block
+        return new Promise((resolve, reject) => {
+            // Resolve with the data if the object isn't the Genesis block
+            // Get block height to determine if block is genesis block.
+            if (self.height <= 0) {
+                reject(Error("Cannot retrieve data for genesis block"));
+            } else {
+                // Decode the data:
+                const asciiCode = hex2ascii(self.body);
+                // Resolve the data:
+                resolve(JSON.parse(asciiCode));
+            }
+        });
 
     }
 
