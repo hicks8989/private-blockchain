@@ -210,7 +210,7 @@ class Blockchain {
                 // Check if the address on the block is the same
                 // as the parameter address:
                 if (blockBody.owner === address) {
-                    stars.push(block);
+                    stars.push(blockBody);
                 }
             }
             resolve(stars);
