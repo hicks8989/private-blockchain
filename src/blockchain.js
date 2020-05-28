@@ -120,7 +120,22 @@ class Blockchain {
     submitStar(address, message, signature, star) {
         let self = this;
         return new Promise(async (resolve, reject) => {
-
+            // Get the timestamp from the message:
+            timestamp = parseInt(message.split(":")[1]);
+            // Get the current time:
+            currentTime = parseInt(new Date().getTime().toString().slice(0, -3));
+            // Get difference between dates:
+            timeDifference = currentTime - timestamp;
+            // Verify that time difference is not greater than 5 minutes:
+            if ((((timeDifference % 86400000) % 3600000) / 6000) <= 5) {
+                // Verify the address:
+                bitcoinMessage.verify(message, address, signature);
+                // Create new block and add it to the chain:
+                block = BlockClass.Block({ data: star });
+                resolve(self._addBlock(block));
+            } else {
+                reject("Request has timed out.");
+            }
         });
     }
 
