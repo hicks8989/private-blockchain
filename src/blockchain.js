@@ -131,7 +131,7 @@ class Blockchain {
                 // Verify the address:
                 bitcoinMessage.verify(message, address, signature);
                 // Create new block and add it to the chain:
-                block = BlockClass.Block({ data: star });
+                block = BlockClass.Block({ star, owner: address });
                 resolve(self._addBlock(block));
             } else {
                 reject("Request has timed out.");
@@ -191,7 +191,15 @@ class Blockchain {
         let self = this;
         let stars = [];
         return new Promise((resolve, reject) => {
-
+            // Filter block chain for matching address and resolve array:
+            stars = self.chain.filter( block => {
+                // Get block data:
+                const blockData = block.getBData();
+                // Return that the block address is the same as the
+                // parameter address:
+                return blockData.owner === address;
+            });
+            resolve(stars);
         });
     }
 
