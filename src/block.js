@@ -40,10 +40,18 @@ class Block {
         return new Promise((resolve, reject) => {
             // Save in auxiliary variable the current block hash
             const blockHash = self.hash;
+            // Set block hash to null:
+            self.hash = null;
             // Recalculate the hash of the Block
             const calculatedHash = SHA256(JSON.stringify(self)).toString();
-            // Compare if the hashes changed
-            resolve(blockHash === calculatedHash);
+            // Reassign original hash value to block:
+            self.hash = blockHash;
+            // Compare if the hashes changed:
+            if (blockHash === calculatedHash) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
         });
     }
 
@@ -68,10 +76,17 @@ class Block {
             if (self.height <= 0) {
                 reject(Error("Cannot retrieve data for genesis block"));
             } else {
+                // Create variable to hold ascii code:
+                let decodedBody;
                 // Decode the data:
-                const asciiCode = hex2ascii(self.body);
+                try {
+                    decodedBody = JSON.parse(hex2ascii(self.body));
+                } catch(e) {
+                    reject(e);
+                    return;
+                }
                 // Resolve the data:
-                resolve(JSON.parse(asciiCode));
+                resolve(decodedBody);
             }
         }).catch(e => console.log(e));
 
