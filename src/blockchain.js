@@ -148,7 +148,19 @@ class Blockchain {
     getBlockByHash(hash) {
         let self = this;
         return new Promise((resolve, reject) => {
-
+            // Get chain height:
+            height = self.getChainHeight();
+            // Iterate through chain:
+            for(let i = 0; i < this.height; i++) {
+                // Get the block at the current height:
+                const block = self.getChainHeight(i);
+                // Check if the blocks hash is the same as the passed in hash:
+                if (block.hash === hash) {
+                    resolve(block);
+                    return;
+                }
+            }
+            reject("No block found with provided hash.");
         });
     }
 
