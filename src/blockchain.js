@@ -205,7 +205,23 @@ class Blockchain {
         let self = this;
         let errorLog = [];
         return new Promise(async (resolve, reject) => {
+            // Get chain height:
+            height = self.getChainHeight();
+            // Iterate through the chain:
+            for(let i = 1; i < this.height; i++) {
+                // Get the current block:
+                const block = self.getBlockByHeight(i);
+                // Get previous block:
+                const previousBlock = self.getBlockByHash(block.previousBlockHash);
+                // Validate the current block and make sure blockchain isn't broken:
+                const isValid = block.validate() && previousBlock;
 
+                if (!isValid) {
+                    // Push block to errorLog:
+                    errorLog.push(block);
+                }
+            }
+            resolve(errorLog);
         });
     }
 
