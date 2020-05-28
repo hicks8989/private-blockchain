@@ -73,7 +73,7 @@ class Block {
                 // Resolve the data:
                 resolve(JSON.parse(asciiCode));
             }
-        });
+        }).catch(e => console.log(e));
 
     }
 
